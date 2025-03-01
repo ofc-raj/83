@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women's Day</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Grechen+Fuemen&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            outline: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #f0ddd6;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        .section {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 0.7s ease-in-out;
+        }
+        video {
+            width: 100vw;
+            height: 100vh;
+            object-fit: contain;
+            background-color: #f0ddd6;
+            position: absolute;
+        }
+        #video2 {
+            transition: filter 1s ease-in-out;
+        }
+        .image {
+            width: 60vw;
+            height: auto;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out 0.5s;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- First Video -->
+        <div class="section" id="section1">
+            <video id="video1" playsinline>
+                <source src="main.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Second Video -->
+        <div class="section" id="section2">
+            <video id="video2" playsinline style="display: none;">
+                <source src="second.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Image Sections (First Image + Portrait Images) -->
+        <div class="section" id="section3">
+            <img class="image" id="finalImage" src="image.png" alt="Final Image">
+        </div>
+
+        <!-- More Portrait Images -->
+        <div class="section" id="section4">
+            <img class="image" src="portrait1.jpg" alt="Portrait 1">
+        </div>
+        <div class="section" id="section5">
+            <img class="image" src="portrait2.jpg" alt="Portrait 2">
+        </div>
+        <div class="section" id="section6">
+            <img class="image" src="portrait3.jpg" alt="Portrait 3">
+        </div>
+    </div>
+
+    <script>
+        let firstVideoPlayed = false;
+        let secondVideoPlayed = false;
+        let finalTransitionTriggered = false;
+        let currentSection = 1;
+        const totalSections = 6; // Number of sections
+        let isScrolling = false;
+
+        document.body.addEventListener('click', function () {
+            let video1 = document.getElementById('video1');
+            let video2 = document.getElementById('video2');
+            let finalImage = document.getElementById('finalImage');
+            
+            if (!firstVideoPlayed) {
+                if (video1.paused) {
+                    video1.play();
+                    firstVideoPlayed = true;
+                }
+            } else if (!secondVideoPlayed) {
+                video1.style.display = "none";
+                video2.style.display = "block";
+                if (video2.paused) {
+                    video2.play();
+                    secondVideoPlayed = true;
+                }
+            } else if (!finalTransitionTriggered) {
+                video2.style.filter = "blur(20px)";
+                finalImage.style.opacity = "1";
+                finalImage.style.transform = "scale(1.4)";
+                finalTransitionTriggered = true;
+            }
+        });
+
+        // Scroll Effect
+        document.addEventListener("wheel", (event) => {
+            if (isScrolling) return; // Prevent multiple scrolls at once
+
+            if (event.deltaY > 0) {
+                // Scroll down
+                if (currentSection < totalSections) {
+                    isScrolling = true;
+                    currentSection++;
+                    scrollToSection(currentSection);
+                    setTimeout(() => isScrolling = false, 700); // Prevent fast scrolling
+                }
+            } else if (event.deltaY < 0) {
+                // Scroll up
+                if (currentSection > 1) {
+                    isScrolling = true;
+                    currentSection--;
+                    scrollToSection(currentSection);
+                    setTimeout(() => isScrolling = false, 700);
+                }
+            }
+        });
+
+        function scrollToSection(section) {
+            document.querySelector(".container").style.transform = `translateY(-${(section - 1) * 100}vh)`;
+        }
+    </script>
+</body>
+</html>
